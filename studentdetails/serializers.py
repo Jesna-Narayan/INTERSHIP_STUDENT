@@ -10,9 +10,13 @@ class SchoolSerializer(serializers.ModelSerializer):
 
 
 class BatchSerializer(serializers.ModelSerializer):
+    # school_name=serializers.SerializerMethodField()
     class Meta:
         model = Batch
         fields = '__all__'
+
+# def get_school_name(self,obj):
+#     return obj.school.name if obj.school.name else None
 
 
 class StudentSerializer(serializers.ModelSerializer):

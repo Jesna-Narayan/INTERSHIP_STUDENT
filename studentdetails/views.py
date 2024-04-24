@@ -270,6 +270,25 @@ class SchoolWithBatch(APIView):
 
         return Response(response_data,status=status.HTTP_200_OK)
 
+
+class StudentWithBatch(APIView):
+    def get(self,request,student_id,format=None):
+        try:
+            student = Student.objects.get(id=student_id)
+        except Student.DoesNotExist:
+            return Response({'error': 'Student not found'},status=status.HTTP_404_NOT_FOUND)
+        student_serializer = StudentSerializer(student)
+        batch = Batch.objects.filter(student=student)
+        batch_serializer = BatchSerializer(batch,many=True)
+
+        response_data = {
+            'student' : student_serializer.data,
+            'batch' : batch_serializer.data,
+        
+        }
+         
+        return Response(response_data,status=status.HTTP_200_OK)
+
 # Create your views here.
 
 
