@@ -239,6 +239,41 @@ def school_update(request, school_id):
 
 
 
+class SchoolWithBatch(APIView):
+    def get(self, respect,school_id, format=None):
+        try:
+            school = School.objects.get(id=school_id)
+        except School.DoesNotExist:
+            return Response({'error': 'School not found '}, status=status.HTTP_404_NOT_FOUND)
+        
+        school_serializer = SchoolSerializer(school)
+        batch = Batch.objects.filter(school=school)
+        final_data = []
+
+        for batch in batch:
+           
+           batch_serializer = BatchSerializer(batch)
+           student_variant = Student.objects.filter(batch=batch)
+           variant_serializer = StudentSerializer(student_variant,many=True)
+
+           batch_data = batch_serializer.data
+           batch_data['variant']=variant_serializer.data
+
+           final_data.append(batch_data)
+       
+           
+
+        response_data ={
+            'school':school_serializer.data,
+           'batch':final_data
+        }
+
+        return Response(response_data,status=status.HTTP_200_OK)
+
+# Create your views here.
+
+
+
 
 
 
